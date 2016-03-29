@@ -35,20 +35,31 @@ int *maxmin(int *a, int len)
 char *convert(char *str, int i, int res)
 {
 	int temp, temp1 = 1;
-	bool t = 0;
+	bool t = 0, a = 0;
 	temp = res;
+	if (temp < 0)
+	{
+		a = 1;
+		temp = (-1)*temp;
+		res = (-1)*res;
+	}
 	while (temp != 0)
 	{
 		temp = temp / 10;
 		temp1 = temp1 * 10;
 		t = 1;
 	}
-	str = (char *)realloc(str, sizeof(char)* 100);//converting number to string 
+	str = (char *)realloc(str, sizeof(char)* 25);//converting number to string 
+	if (a == 1)
+	{
+		str[i++] = '-';
+	}
 	while (temp1 != 1)
 	{
 		str[i++] = ((res * 10) / temp1) % 10 + '0';
 		temp1 = temp1 / 10;
 	}
+
 	if (t == 0)
 	{
 		str[i++] = 0 + '0';
@@ -59,6 +70,7 @@ char *convert(char *str, int i, int res)
 char *res(int *a, int len)//result function
 {
 	int *res, i = 0, count = 0;
+	bool t = 0;
 	char *str;
 	str = (char *)malloc(sizeof(char)* 100);
 	res = maxmin(a, len);//to find min max
@@ -71,7 +83,12 @@ char *res(int *a, int len)//result function
 			str[i++] = 'm'; str[i++] = 'a'; str[i++] = 'x'; str[i++] = ' '; str[i++] = 'm';
 			str[i++] = 'i'; str[i++] = 'n'; str[i++] = ' '; str[i++] = 'a'; str[i++] = 'r';
 			str[i++] = 'e'; str[i++] = ' '; str[i++] = 's'; str[i++] = 'a'; str[i++] = 'm'; str[i++] = 'e';
-			return convert(str, i, res[0]);
+			str = convert(str, i, res[0]);
+			if (res[0] == 0)
+			{
+				str[17] = '\0';
+			}
+			return str;
 		}
 		else//if len>=2 and min and max not equal
 		{
@@ -79,13 +96,22 @@ char *res(int *a, int len)//result function
 			str[i++] = 'i'; str[i++] = 'n'; str[i++] = ' '; str[i++] = 'a'; str[i++] = 'r';
 			str[i++] = 'e';
 			convert(str, i, res[0]);
+			if (res[0] < 0)
+			{
+				res[0] = (-1)*res[0];
+				t = 1;
+			}
+			if (res[0] == 0)
+			{
+				i++;
+			}
 			while (res[0] != 0)
 			{
 				res[0] = res[0] / 10;
 				count++;
 			}
-			str[i + count] = ' ';
-			return convert(str, i + count + 1, res[1]);
+			str[i + count + t] = ' ';
+			return convert(str, i + count + 1 + t, res[1]);
 		}
 	}
 	else if (len == 1)// if length 1 no min only max
